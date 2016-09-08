@@ -2,7 +2,7 @@
  * This codes works to detect earthquake.
  * Requires the device to set at a fixed point and switched on.
  * This example code is in the public domain.
- * Modified 27-aug-2016 
+ * Modified 09-Sept-2016 
  * By
  * Sanket Nainani
 */
