@@ -9,7 +9,7 @@
 
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
-char auth[] = "66d601408f1641fabda10524db00587c";
+char auth[] = "x389a645d80da4d53bb6e3b3f3a89ea77";
 
 BLEPeripheral  blePeripheral;
 
@@ -21,6 +21,24 @@ int led[3][3] = {
 int inputPin = 2;               // choose the input pin (for PIR sensor)
 int pirState = LOW;             // we start, assuming no motion detected
 int val = 0;                    // variable for reading the pin status
+int ledStatus = 0;
+int ledMode = 0;
+
+BLYNK_WRITE(V1) 
+{
+  ledMode = param.asInt();
+  Serial.println("PINMODE : " + ledMode); 
+}
+
+BLYNK_WRITE(V0) 
+{
+  ledStatus = param.asInt();
+  Serial.println("PINMODE : " + ledStatus);
+  if(ledStatus == 0)
+  {
+    allLEDs(LOW);
+  }
+}
 
 void setup() {
   //declare LEDs as OUTPUT
@@ -33,8 +51,8 @@ void setup() {
   pinMode(inputPin, INPUT);     // declare sensor as input
   Serial.begin(9600);
 
-   blePeripheral.setLocalName("Smart_Lighting_xxx");
-   blePeripheral.setDeviceName("Smart_Lighting_xxx");
+   blePeripheral.setLocalName("001");
+   blePeripheral.setDeviceName("001");
    blePeripheral.setAppearance(384);
    Serial.println("ble will start now start");
    Blynk.begin(auth, blePeripheral);
@@ -45,21 +63,30 @@ void loop(){
   Blynk.run();
   blePeripheral.poll();
 
-  //detectMotion();
-  //rowByRow(); 
-  //delay(1000);
-  //oneByOne();
-  //delay(1000);
-  //corners();
-  //delay(1000);
-  //colByCol();
-  //delay(1000);
+  if(ledStatus == 0)
+  {
+    detectMotion();
+  }
+  else
+  {
+    if(ledMode == 1)
+      rowByRow();
+    else if(ledMode == 2)
+      oneByOne();
+    else if(ledMode == 3)
+      corners();
+    else if(ledMode == 4)
+      colByCol();
+    else
+      allLEDs(HIGH);
+  }
 }
 
 
 void detectMotion(){
 
    val = digitalRead(inputPin);  // read input value
+   Serial.println(val);
    if (val == HIGH) {            // check if the input is HIGH
     if (pirState == LOW) {
       // we have just turned on
@@ -77,7 +104,6 @@ void detectMotion(){
       delay(500);
     }
   }
-
 }
 
 void allLEDs(int output){
@@ -97,7 +123,6 @@ void rowByRow(){
       }
       delay(200);
     }
-    //delay(1000);
     for(int i=2;i>=0;i--){
       for(int j=0;j<3;j++){
         digitalWrite(led[i][j], LOW);
@@ -165,38 +190,3 @@ void corners(){
     digitalWrite(led[2][1], LOW);
   }
 }
-
-BLYNK_WRITE(V1) 
-{
-  int ledMode = param.asInt();
-  Serial.println("PINMODE : " + ledMode);
-  if(ledMode == 0)
-    detectMotion();
-  else if(ledMode == 1)
-    rowByRow();
-  else if(ledMode == 2)
-    oneByOne();
-  else if(ledMode == 3)
-    corners();
-  else if(ledMode == 4)
-    colByCol(); 
-}
-
-BLYNK_WRITE(V0) 
-{
-  int ledMode = param.asInt();
-  Serial.println("PINMODE : " + ledMode);
-}
-
-/**
-BLYNK_WRITE(V1) //Button Widget is writing to pin V1
-{
-  int ledMode = param.asInt();
-  if(ledMode = 1)
-    allLEDs(HIGH);
-  else
-    allLEDs(LOW);
-   
-}
-*/
-
