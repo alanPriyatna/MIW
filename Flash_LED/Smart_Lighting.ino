@@ -1,7 +1,3 @@
-//download libraries from blynk's official site.
-
-//#define BLYNK_USE_DIRECT_CONNECT
-
 #define BLYNK_PRINT Serial
 
 #include <BlynkSimpleCurieBLE.h>
@@ -9,7 +5,7 @@
 
 // You should get Auth Token in the Blynk App.
 // Go to the Project Settings (nut icon).
-char auth[] = "x389a645d80da4d53bb6e3b3f3a89ea77";
+char auth[] = "YourAuthCode";
 
 BLEPeripheral  blePeripheral;
 
@@ -51,8 +47,8 @@ void setup() {
   pinMode(inputPin, INPUT);     // declare sensor as input
   Serial.begin(9600);
 
-   blePeripheral.setLocalName("001");
-   blePeripheral.setDeviceName("001");
+   blePeripheral.setLocalName("Kit-Number");
+   blePeripheral.setDeviceName("Kit-Number");
    blePeripheral.setAppearance(384);
    Serial.println("ble will start now start");
    Blynk.begin(auth, blePeripheral);
@@ -190,3 +186,4 @@ void corners(){
     digitalWrite(led[2][1], LOW);
   }
 }
+
